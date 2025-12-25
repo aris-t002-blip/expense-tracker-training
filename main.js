@@ -1,3 +1,5 @@
+const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyap21ds-moXNc7tPS3XGTKauq-nACEBeFtVK1AeQjV2r_mI7tWF7iCgc_wkI1H5fDJ/exec";
+
 const form = document.getElementById("expense-form");
 const list = document.getElementById("expense-list");
 
