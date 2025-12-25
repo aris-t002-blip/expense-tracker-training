@@ -1,5 +1,5 @@
 const GAS_WEBAPP_URL =
-  "https://script.google.com/macros/s/AKfycbyap21ds-moXNc7tPS3XGTKauq-nACEBeFtVK1AeQjV2r_mI7tWF7iCgc_wkI1H5fDJ/exec";
+  "https://script.google.com/macros/s/AKfycbxMN8egagKGljzFjndqNnkgdJ174mur2txE9zW0snBFP-HIYWSQA1YBNyRlCZfkvGBz/exec";
 
 const form = document.getElementById("expense-form");
 const list = document.getElementById("expense-list");
@@ -11,8 +11,7 @@ const memoEl = document.getElementById("memo");
 
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-// ====== スプレッドシートへ同期（全件上書き）======
-// CORS回避のため payload を URLSearchParams で送る
+/* ===== GASへ同期（CORS回避）===== */
 function syncToSheet() {
   const body = new URLSearchParams();
   body.set("payload", JSON.stringify(expenses));
@@ -20,22 +19,19 @@ function syncToSheet() {
   fetch(GAS_WEBAPP_URL, {
     method: "POST",
     body,
-  }).catch((err) => {
-    console.error("GAS送信失敗", err);
-  });
+  }).catch((err) => console.error("GAS送信失敗", err));
 }
 
-// ====== 保存＆表示 ======
+/* ===== 保存＆表示 ===== */
 function saveAndRender() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
-  syncToSheet(); // ← 追加/削除のたびに同期
+  syncToSheet();
   render();
 }
 
-// ====== 一覧表示 ======
+/* ===== 表示 ===== */
 function render() {
   list.innerHTML = "";
-
   expenses.forEach((e, index) => {
     const li = document.createElement("li");
     li.textContent = `${e.date} / ${e.category} / ¥${e.amount} / ${e.memo || ""} `;
@@ -52,22 +48,21 @@ function render() {
   });
 }
 
-// ====== 追加 ======
+/* ===== 追加 ===== */
 form.addEventListener("submit", (ev) => {
   ev.preventDefault();
 
-  const item = {
+  expenses.push({
     id: Date.now(),
     date: dateEl.value,
     category: categoryEl.value,
     amount: Number(amountEl.value),
     memo: memoEl.value,
-  };
+  });
 
-  expenses.push(item);
   saveAndRender();
   form.reset();
 });
 
-// 初期表示
+/* 初期表示 */
 render();
