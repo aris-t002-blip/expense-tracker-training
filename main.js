@@ -1,5 +1,5 @@
 const GAS_WEBAPP_URL =
-  "https://script.google.com/macros/s/AKfycbyZyS5hCTRWVsWdfrbI1ykiZyf-hgbLBmEOs1YkWLVdVhfxQc59PV-SbxNv8HWs-6Rh/exec";
+  "https://script.google.com/macros/s/AKfycbxardtcHdiiA4nh4ptAtUTHUbULYHDe8XUSVtp4vox2_w0PYmJoK6yRyMRNc2f79Jnx/exec";
 
 const form = document.getElementById("expense-form");
 const list = document.getElementById("expense-list");
@@ -11,25 +11,21 @@ const memoEl = document.getElementById("memo");
 
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-/* ===== GASへ同期（CORS回避） ===== */
+// CORS回避：payloadをフォーム送信でPOST
 function syncToSheet() {
   const body = new URLSearchParams();
   body.set("payload", JSON.stringify(expenses));
 
-  fetch(GAS_WEBAPP_URL, {
-    method: "POST",
-    body,
-  }).catch((err) => console.error("GAS送信失敗", err));
+  fetch(GAS_WEBAPP_URL, { method: "POST", body })
+    .catch(err => console.error("GAS送信失敗", err));
 }
 
-/* ===== 保存＆表示 ===== */
 function saveAndRender() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   syncToSheet();
   render();
 }
 
-/* ===== 一覧表示 ===== */
 function render() {
   list.innerHTML = "";
   expenses.forEach((e, index) => {
@@ -48,7 +44,6 @@ function render() {
   });
 }
 
-/* ===== 追加 ===== */
 form.addEventListener("submit", (ev) => {
   ev.preventDefault();
 
@@ -64,5 +59,4 @@ form.addEventListener("submit", (ev) => {
   form.reset();
 });
 
-/* 初期表示 */
 render();
