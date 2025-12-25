@@ -5,16 +5,18 @@ const list = document.getElementById("expense-list");
 
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
+/* ===== 共通保存 ===== */
 function saveAndRender() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
   render();
 }
 
+/* ===== 表示 ===== */
 function render() {
   list.innerHTML = "";
   expenses.forEach((e, index) => {
     const li = document.createElement("li");
-    li.textContent = `${e.date} ${e.category} ¥${e.amount} ${e.memo}`;
+    li.textContent = `${e.date} / ${e.category} / ¥${e.amount} / ${e.memo}`;
 
     const delBtn = document.createElement("button");
     delBtn.textContent = "削除";
@@ -28,18 +30,33 @@ function render() {
   });
 }
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
+/* ===== 追加 + GAS送信 ===== */
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
 
-  expenses.push({
-    date: date.value,
-    category: category.value,
-    amount: amount.value,
-    memo: memo.value
-  });
+  const data = {
+    date: document.getElementById("date").value,
+    category: document.getElementById("category").value,
+    amount: document.getElementById("amount").value,
+    memo: document.getElementById("memo").value,
+  };
 
+  // ① 画面 & localStorage
+  expenses.push(data);
   saveAndRender();
   form.reset();
+
+  // ② GASへ送信（←これが今まで無かった）
+  try {
+    await fetch(GAS_WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+  } catch (err) {
+    console.error("GAS送信エラー", err);
+  }
 });
 
+/* 初期表示 */
 render();
