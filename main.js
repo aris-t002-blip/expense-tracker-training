@@ -1,4 +1,5 @@
-const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyap21ds-moXNc7tPS3XGTKauq-nACEBeFtVK1AeQjV2r_mI7tWF7iCgc_wkI1H5fDJ/exec";
+const GAS_WEBAPP_URL =
+  "https://script.google.com/macros/s/AKfycbyap21ds-moXNc7tPS3XGTKauq-nACEBeFtVK1AeQjV2r_mI7tWF7iCgc_wkI1H5fDJ/exec";
 
 const form = document.getElementById("expense-form");
 const list = document.getElementById("expense-list");
@@ -30,33 +31,32 @@ function render() {
   });
 }
 
-/* ===== 追加 + GAS送信 ===== */
+/* ===== 初期表示 ===== */
+render();
+
+/* ===== 追加処理（ここが重要） ===== */
 form.addEventListener("submit", async (ev) => {
   ev.preventDefault();
 
   const data = {
-    date: document.getElementById("date").value,
-    category: document.getElementById("category").value,
-    amount: document.getElementById("amount").value,
-    memo: document.getElementById("memo").value,
+    date: form.date.value,
+    category: form.category.value,
+    amount: form.amount.value,
+    memo: form.memo.value,
   };
 
-  // ① 画面 & localStorage
+  // 画面用（localStorage）
   expenses.push(data);
   saveAndRender();
   form.reset();
 
-  // ② GASへ送信（←これが今まで無かった）
+  // ★ GASへ送信（これが今まで無かった）
   try {
     await fetch(GAS_WEBAPP_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
   } catch (err) {
-    console.error("GAS送信エラー", err);
+    console.error("GAS送信失敗", err);
   }
 });
-
-/* 初期表示 */
-render();
