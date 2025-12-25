@@ -11,7 +11,7 @@ const memoEl = document.getElementById("memo");
 
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
-/* ===== GASへ同期（CORS回避）===== */
+/* ===== GASへ同期（CORS回避） ===== */
 function syncToSheet() {
   const body = new URLSearchParams();
   body.set("payload", JSON.stringify(expenses));
@@ -29,7 +29,7 @@ function saveAndRender() {
   render();
 }
 
-/* ===== 表示 ===== */
+/* ===== 一覧表示 ===== */
 function render() {
   list.innerHTML = "";
   expenses.forEach((e, index) => {
@@ -66,4 +66,3 @@ form.addEventListener("submit", (ev) => {
 
 /* 初期表示 */
 render();
-
