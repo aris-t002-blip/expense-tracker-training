@@ -1,5 +1,5 @@
 const GAS_WEBAPP_URL =
-  "https://script.google.com/macros/s/AKfycbwRYiwCXs2m4eOM_NEDLZHEY7lhO8YD3e01XzDmIR22SDHBil_rzg2JWGG9uHou5kU/exec";
+  "https://script.google.com/macros/s/AKfycbzHpMk-M5PXsulD7XrKN-IaQBGCRVhtERtLyz4bDQGvWyQIBpfcbbJaP4-LPSMcnvY9/exec";
 
 const form = document.getElementById("expense-form");
 const list = document.getElementById("expense-list");
@@ -60,4 +60,5 @@ form.addEventListener("submit", (ev) => {
 });
 
 render();
+
 
